@@ -3,7 +3,7 @@ console.log('わかりません javascript wwwwww');
 
 
 /* smol brain */
-let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE']);
+let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE', 'AND']);
 
 function findMeme(child) {
     /* cutting-edge state-of-the-art sentiment analysis */
