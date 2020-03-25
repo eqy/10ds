@@ -1,4 +1,5 @@
 console.log('running some code...');
+console.log('わかりません javascript wwwwww');
 
 
 /* smol brain */
@@ -15,6 +16,7 @@ function findMeme(child) {
     let re = /[A-Z]{2,4} +[0-9]{1,9}(?:p|c|P|C)/;
     let str = child['data']['selftext'];
     let memes = [];
+    let memecontexts = [];
     do {
         match = str.match(re);
         if (match != null) {
@@ -22,13 +24,15 @@ function findMeme(child) {
             memes.push(match);
             match_idx = str.indexOf(match);
             str = str.slice(match_idx + match.length);
+            /* this is hideously inefficient */
+            memecontexts.push(child);
         }
     } while (match != null);
-    return memes;
+    return [memes, memecontexts];
 }
 
 
-function memeStats(memes) {
+function memeStats(memes, memecontexts) {
     let space_re = /[ ]+/;
     let map = {};
     for (idx = 0; idx < memes.length; idx++) {
@@ -41,13 +45,21 @@ function memeStats(memes) {
         let last = meme[meme.length - 1];
         let bear = last == 'p' || last == 'P';
         if (!(ticker in map)) {
-            map[ticker] = {'puts': 0, 'calls': 0, 'total': 0};
+            map[ticker] = {'puts': 0, 'calls': 0, 'total': 0,
+                           'put_texts': [], 'put_links': [], 
+                           'call_texts': [], 'call_links':[]};
         }
         map[ticker]['total']++;
+        let selftext = memecontexts[idx]['data']['selftext'];
+        let link = memecontexts[idx]['data']['permalink'];
         if (bear) {
             map[ticker]['puts']++; 
+            map[ticker]['put_texts'].push(selftext);
+            map[ticker]['put_links'].push('https://www.reddit.com' + link);
         } else {
             map[ticker]['calls']++;
+            map[ticker]['call_texts'].push(selftext);
+            map[ticker]['call_links'].push('https://www.reddit.com' + link);
         } 
     }
     console.log(map);
@@ -55,14 +67,74 @@ function memeStats(memes) {
 }
 
 
+function generatePostLink(link_text, tooltip_text, link){
+    let text = '<a href=' + link + ' title=\"' + tooltip_text + '\">' + link_text + '</a>';
+    return text;
+}
+
+
+function insertTickerWrapper(ticker, idx, map) {
+    let text = ticker + ": ";
+    let put_count = map[ticker]['puts'];
+    let call_count = map[ticker]['calls'];
+    let bear = '🐻';
+    let bull = '🐂';
+    let put_texts = map[ticker]['put_texts'];
+    let call_texts = map[ticker]['call_texts'];
+    let put_links = map[ticker]['put_links'];
+    let call_links = map[ticker]['call_links'];
+
+    if (put_count >= call_count) {
+        for (i = 0; i < put_count; i++) {
+            text = text + generatePostLink(bear, put_texts[i], put_links[i]);
+        }
+        for (j = 0; j < call_count; j++) {
+            text = text + generatePostLink(bull, call_texts[j], call_links[j]);
+        }
+    } else {
+        for (j = 0; j < call_count; j++) {
+            text = text + generatePostLink(bull, call_texts[j], call_links[j]);
+        }
+        for (i = 0; i < put_count; i++) {
+            text = text + generatePostLink(bear, put_texts[i], put_links[j]);
+        }
+    } 
+    $('#wrappertext' + idx.toString()).append(text);
+}
+
+
+function insertTicker(ticker, idx) {
+    let widget = new TradingView.widget(
+    {
+    "width": 320,
+    "height": 320,
+    "symbol": ticker,
+    "interval": "D",
+    "timezone": "Etc/UTC",
+    "theme": "light",
+    "style": "1",
+    "locale": "en",
+    "toolbar_bg": "#f1f3f6",
+    "enable_publishing": false,
+    "allow_symbol_change": false,
+    "container_id": "tradingview" + idx.toString(),
+    });
+    console.log(widget);
+}
+
+
 function renderThreads(children) {
     console.log(children.length);
     let memes = [];
+    let memecontexts = [];
     for (idx = 0; idx < children.length; idx++) {
-        let found_memes = findMeme(children[idx]);
-        memes = memes.concat(found_memes);
+        let found_meme_results = findMeme(children[idx]);
+        /* get back both call/puts and context of meme */
+        memes = memes.concat(found_meme_results[0]);
+        memecontexts = memecontexts.concat(found_meme_results[1]);
+        console.assert(memecontexts.length == memes.length, "memecontext length check failed");
     }
-    let stats = memeStats(memes);
+    let stats = memeStats(memes, memecontexts);
     let tickers = Object.keys(stats);
     let sorted_keys = tickers.sort(function comp(a, b){
         return stats[a]['total'] < stats[b]['total'];
@@ -98,7 +170,7 @@ function renderThreads(children) {
       stacked: true,
       stackType: '100%'
     },
-    colors: ['#ff4560', '#00ff8f'],
+    colors: ['#fe5350', '#26a69a'],
     plotOptions: {
       bar: {
         horizontal: true,
@@ -134,13 +206,17 @@ function renderThreads(children) {
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
-
+    for (idx = 0; idx < Math.min(sorted_keys.length, 7); idx++) {
+        insertTickerWrapper(sorted_keys[idx], idx, stats);
+        insertTicker(sorted_keys[idx], idx);
+    }
+    console.log(stats);
     console.log('done');
 }
 
 
 /* reddit threads not software threads ¯\_(ツ)_/¯ */
-function getThreads(reqs=20) {
+function getThreads(reqs=10) {
     var after = ''; 
     var children = [];
     var done = 0;
@@ -156,6 +232,7 @@ function getThreads(reqs=20) {
         console.log(children.length);
         done++;
         if (done >= reqs) {
+            $('div').remove('.loader');
             renderThreads(children);            
         } else {
             let url = base_url;
@@ -167,7 +244,6 @@ function getThreads(reqs=20) {
     }
     $.getJSON(base_url, successHandler);
 }
-
 
 
 getThreads();

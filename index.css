@@ -1,10 +1,33 @@
 body {
-    width: 600px;
+    font: sans-serif;
     margin: 0 auto;
+}
+
+.top {
+    font: sans-serif;
+    margin: 0 auto;
+    text-align: center;
 }
 
 .container {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 5px
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 10px;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to { 
+    transform: rotate(360deg);
+  }
+}
+
+div.loader {
+    animation-name:            rotate; 
+    animation-duration:        4.0s; 
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    margin: 0 auto;
 }
