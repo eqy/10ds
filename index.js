@@ -2,7 +2,7 @@ console.log('running some code...');
 
 
 /* smol brain */
-let invalid_memes = new Set(['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']);
+let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']);
 
 function findMeme(child) {
     /* cutting-edge state-of-the-art sentiment analysis */
@@ -140,12 +140,12 @@ function renderThreads(children) {
 
 
 /* reddit threads not software threads ¯\_(ツ)_/¯ */
-function getThreads(reqs=10) {
+function getThreads(reqs=20) {
     var after = ''; 
     var children = [];
     var done = 0;
     
-    var base_url = 'https://www.reddit.com/r/wallstreetbets.json';
+    var base_url = 'https://www.reddit.com/r/wallstreetbets.json?limit=100';
 
     function successHandler(data) {
         /* is concat thread safe? jesus jk everything is supposedly in a
@@ -160,7 +160,7 @@ function getThreads(reqs=10) {
         } else {
             let url = base_url;
             if (after != '') {
-                url = url + '?after=' + after;
+                url = url + '&after=' + after;
             }
             $.getJSON(url, successHandler); 
         }
