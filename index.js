@@ -231,11 +231,13 @@ function getThreads(reqs=10) {
         after = data['data']['after'];
         console.log(children.length);
         done++;
-        if (done >= reqs) {
+        if (done >= reqs || after == null) {
             $('div').remove('.loader');
             renderThreads(children);            
         } else {
+            $('#loadingtext').text("P-p-please be patient... " + (done*100/reqs) + '%');
             let url = base_url;
+            console.log("after:", after);
             if (after != '') {
                 url = url + '&after=' + after;
             }
