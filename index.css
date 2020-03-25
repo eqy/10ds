@@ -9,11 +9,23 @@ body {
     text-align: center;
 }
 
-.container {
+
+@media all and (orientation:portrait) {
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 5px;
+  }
+}
+
+@media all and (orientation:landscape) {
+  .container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 5px;
+  }
 }
+
 
 .tradingwrapper {
     margin: auto auto;
