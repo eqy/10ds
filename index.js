@@ -3,7 +3,7 @@ console.log('わかりません javascript wwwwww');
 
 
 /* smol brain */
-let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']);
+let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE']);
 
 function findMeme(child) {
     /* cutting-edge state-of-the-art sentiment analysis */
@@ -13,17 +13,23 @@ function findMeme(child) {
        and STRIKE SYMBOL DATE
        if first matches earlier, use first
        else use second */
-    let re = /[A-Z]{2,4} +[0-9]{1,9}(?:p|c|P|C)/;
+    let re = /\b[A-Za-z]{2,4} +[0-9]{1,9}(?:p|c|P|C)/;
     let str = child['data']['selftext'];
     let memes = [];
     let memecontexts = [];
+    let found = new Set();
     do {
         match = str.match(re);
         if (match != null) {
             match = match[0];
-            memes.push(match);
             match_idx = str.indexOf(match);
             str = str.slice(match_idx + match.length);
+            match = match.toUpperCase();
+            if (found.has(match)) {
+                continue;
+            }
+            found.add(match);
+            memes.push(match);
             /* this is hideously inefficient */
             memecontexts.push(child);
         }
