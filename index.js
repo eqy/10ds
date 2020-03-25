@@ -13,7 +13,7 @@ function findMeme(child) {
        and STRIKE SYMBOL DATE
        if first matches earlier, use first
        else use second */
-    let re = /\b[A-Za-z]{2,4} +[0-9]{1,9}(?:p|c|P|C)/;
+    let re = /\b[A-Za-z]{2,4} +[0-9\.]{1,9}(?:p|c|P|C)/;
     let str = child['data']['selftext'];
     let memes = [];
     let memecontexts = [];
@@ -112,8 +112,8 @@ function insertTickerWrapper(ticker, idx, map) {
 function insertTicker(ticker, idx) {
     let widget = new TradingView.widget(
     {
-    "width": 320,
-    "height": 320,
+    "width": 400,
+    "height": 400,
     "symbol": ticker,
     "interval": "D",
     "timezone": "Etc/UTC",
@@ -171,8 +171,8 @@ function renderThreads(children) {
     }],
       chart: {
       type: 'bar',
-      height: 420,
-      width: 420,
+      height: 512,
+      width: 512,
       stacked: true,
       stackType: '100%'
     },
@@ -183,7 +183,7 @@ function renderThreads(children) {
       },
     },
     stroke: {
-      width: 1,
+      width: 0.8,
       colors: ['#fff']
     },
     title: {
