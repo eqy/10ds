@@ -216,7 +216,7 @@ function renderThreads(children) {
       colors: ['#fff']
     },
     title: {
-      text: 'WSB Puts/Calls'
+      text: 'Positions'
     },
     xaxis: {
       categories: sorted_keys_render,
