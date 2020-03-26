@@ -41,23 +41,28 @@ function findMeme(child) {
        and STRIKE SYMBOL DATE
        if first matches earlier, use first
        else use second */
-    let re = /\b[A-Za-z]{1,4} +[0-9\.]{1,9}(?:p|c|P|C)/;
-    let str = child['data']['selftext'];
+    //let re = /\b[A-Za-z]{1,4} *[0-9\.]{1,9} *(?:p|c|P|C)/;
+    //let re = /\b[A-Za-z]{1,4}\b *[\$0-9\.]{1,9} *(?:P(UT\b|UTS\b|\b)|C(ALL\b|ALLS\b|\b))/;
+    let re = /(\b[A-Za-z]{1,4}\b) *\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS\b|\b)|C(?:ALL\b|ALLS\b|\b))/;
+    let str = child['data']['selftext'].toUpperCase();
     let memes = [];
     let memecontexts = [];
     let found = new Set();
+    let match = null;
     do {
         match = str.match(re);
         if (match != null) {
-            match = match[0];
-            match_idx = str.indexOf(match);
-            str = str.slice(match_idx + match.length);
-            match = match.toUpperCase();
-            if (found.has(match)) {
+            let ticker = match[1];
+            let strike = match[2];
+            let type = match[3];
+            match_idx = str.indexOf(match[0]);
+            str = str.slice(match_idx + match[0].length);
+            //match = match.toUpperCase();
+            if (found.has(ticker)) {
                 continue;
             }
-            found.add(match);
-            memes.push(match);
+            found.add(ticker);
+            memes.push([ticker, strike, type]);
             /* this is hideously inefficient */
             memecontexts.push(child);
         }
@@ -71,13 +76,11 @@ function memeStats(memes, memecontexts) {
     let map = {};
     for (idx = 0; idx < memes.length; idx++) {
         let meme = memes[idx]; 
-        let splits = meme.split(space_re);
-        let ticker = splits[0];
+        let ticker = meme[0];
         if (invalid_memes.has(ticker)) {
             continue;
         }
-        let last = meme[meme.length - 1];
-        let bear = last == 'p' || last == 'P';
+        let bear = meme[2] == 'P';
         if (!(ticker in map)) {
             map[ticker] = {'puts': 0, 'calls': 0, 'total': 0,
                            'put_texts': [], 'put_links': [], 
@@ -96,7 +99,6 @@ function memeStats(memes, memecontexts) {
             map[ticker]['call_links'].push('https://www.reddit.com' + link);
         } 
     }
-    console.log(map);
     return map;
 }
 
@@ -171,7 +173,7 @@ function renderThreads(children) {
     let sorted_keys = tickers.sort(function comp(a, b){
         return stats[a]['total'] < stats[b]['total'];
     });
-    console.log(sorted_keys);
+
     let put_data = [];
     let call_data = [];
     let sorted_keys_render = [];
@@ -263,7 +265,7 @@ function fetchJSON(url, successHandler, token) {
 
 
 /* reddit threads not software threads ¯\_(ツ)_/¯ */
-function getThreads(token, reqs=10) {
+function getThreads(token, reqs=5) {
     var after = ''; 
     var children = [];
     var done = 0;
