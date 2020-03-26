@@ -153,12 +153,10 @@ function insertTicker(ticker, idx) {
     "allow_symbol_change": false,
     "container_id": "tradingview" + idx.toString(),
     });
-    console.log(widget);
 }
 
 
 function renderThreads(children) {
-    console.log(children.length);
     let memes = [];
     let memecontexts = [];
     for (idx = 0; idx < children.length; idx++) {
@@ -244,7 +242,6 @@ function renderThreads(children) {
         insertTickerWrapper(sorted_keys[idx], idx, stats);
         insertTicker(sorted_keys[idx], idx);
     }
-    console.log(stats);
     console.log('done');
 }
 
@@ -279,7 +276,6 @@ function getThreads(token, reqs=10) {
         */
         children = children.concat(data['data']['children']);
         after = data['data']['after'];
-        console.log(children.length);
         done++;
         if (done >= reqs || after == null) {
             $('div').remove('.loader');
