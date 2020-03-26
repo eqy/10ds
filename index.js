@@ -216,7 +216,7 @@ function renderThreads(children) {
       colors: ['#fff']
     },
     title: {
-      text: 'Positions'
+      text: 'WallStreetBets Positions'
     },
     xaxis: {
       categories: sorted_keys_render,
