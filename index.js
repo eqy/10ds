@@ -41,7 +41,7 @@ function findMeme(child) {
        and STRIKE SYMBOL DATE
        if first matches earlier, use first
        else use second */
-    let re = /\b[A-Za-z]{2,4} +[0-9\.]{1,9}(?:p|c|P|C)/;
+    let re = /\b[A-Za-z]{1,4} +[0-9\.]{1,9}(?:p|c|P|C)/;
     let str = child['data']['selftext'];
     let memes = [];
     let memecontexts = [];
