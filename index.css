@@ -32,6 +32,12 @@ body {
     margin: auto auto;
 }
 
+#guhindex {
+    font-size: 24px;    
+    font-weight: bold;
+    margin: auto auto;
+}
+
 #loadingtext {
     font-size: 36px;
 }

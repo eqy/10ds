@@ -186,23 +186,21 @@ function insertTicker(ticker, idx) {
 function renderThreads(children) {
     let memes = [];
     let memecontexts = [];
-    /*
     let bear_count = 0;
     let bull_count = 0;
-    */
+
     for (idx = 0; idx < children.length; idx++) {
         let found_meme_results = findMeme(children[idx]);
-        /* 
+
         let counts = findIndicator(children[idx]);
-        bear_count += counts[0];
-        bull_count += counts[1];
-        */
+        //bear_count += counts[0];
+        //bull_count += counts[1];
+
         /* get back both call/puts and context of meme */
         memes = memes.concat(found_meme_results[0]);
         memecontexts = memecontexts.concat(found_meme_results[1]);
         console.assert(memecontexts.length == memes.length, "memecontext length check failed");
     }
-    // console.log("overall sentiment: bears: ", bear_count, " bulls: ", bull_count);
     let stats = memeStats(memes, memecontexts);
     let tickers = Object.keys(stats);
     let sorted_keys = tickers.sort(function comp(a, b){
@@ -216,6 +214,8 @@ function renderThreads(children) {
         let ticker = sorted_keys[idx];
         put_data.push(stats[ticker]['puts']);
         call_data.push(stats[ticker]['calls']);
+        bear_count += stats[ticker]['puts'];
+        bull_count += stats[ticker]['calls'];
         let emoji = '🐻';
         if (stats[ticker]['puts'] < stats[ticker]['calls']) {
             emoji = '🐂';
@@ -223,6 +223,8 @@ function renderThreads(children) {
         val = stats[ticker]['total'].toString();
         sorted_keys_render.push(ticker + ' ' + emoji + '(' + val + ')');
     }
+
+    computeGuhIndex(bear_count, bull_count);
 
     var options = {
       series: [{
@@ -295,6 +297,7 @@ function fetchJSON(url, successHandler, token) {
       type: 'GET',
       dataType: 'json',
       success: successHandler,
+      /* TODO: handle 429 */
       /* error: ???, guess ill die */
       beforeSend: setHeader
     });
@@ -330,6 +333,41 @@ function getThreads(token, reqs=6) {
         }
     }
     fetchJSON(base_url, successHandler, token);
+}
+
+
+function computeGuhIndex(put_count, call_count) {
+    function successHandler(data) {
+        let market_change = (data['c']/data['pc']) - 1.0
+        let sign = Math.sign(put_count - call_count)
+        if (put_count > call_count) {
+            index = sign*(put_count/(call_count + 1E-6))*market_change*100
+        } else {
+            index = sign*(call_count/(put_count + 1E-6))*market_change*100
+        }
+        let text = ' ';
+        if (index < 0) {
+            text += '(inverse G';
+        } else {
+            text += '(G';
+        }
+        for (i=0; i < Math.ceil(index/2.0); i++) {
+            text += 'U'; 
+        }
+        text += 'H)';
+        let final_text = 'guh index: ' + index.toString() + text;
+        $('#guhindex').append(final_text);
+    }
+    
+    let url = 'https://finnhub.io/api/v1/quote?symbol=SPY&token=bpuio3frh5rcil2v65d0';
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      success: successHandler,
+      /* TODO: handle 429 */
+      /* error: ???, guess ill die */
+    });
 }
 
 
