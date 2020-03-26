@@ -284,7 +284,7 @@ function getThreads(token, reqs=5) {
             $('div').remove('.loader');
             renderThreads(children);            
         } else {
-            $('#loadingtext').text("P-p-please be patient... " + (done*100/reqs) + '%');
+            $('#loadingtext').text("Please be patient... " + (done*100/reqs) + '%');
             let url = base_url;
             console.log("after:", after);
             if (after != '') {
