@@ -1,10 +1,9 @@
 body {
-    font: sans-serif;
+    font-family: sans-serif;
     margin: 0 auto;
 }
 
 .top {
-    font: sans-serif;
     margin: 0 auto;
     text-align: center;
 }
