@@ -1,11 +1,16 @@
 body {
     font-family: sans-serif;
     margin: 0 auto;
+    text-align: center;
 }
 
 .top {
     margin: 0 auto;
     text-align: center;
+}
+
+#chart {
+    display: inline-block;
 }
 
 

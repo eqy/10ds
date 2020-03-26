@@ -199,17 +199,18 @@ function renderThreads(children) {
     }],
       chart: {
       type: 'bar',
-      height: 512,
-      width: 512,
+      height: 320,
+      width: 1024,
       stacked: true,
       stackType: '100%'
     },
     colors: ['#fe5350', '#26a69a'],
     plotOptions: {
       bar: {
-        horizontal: true,
+        horizontal: false,
       },
     },
+    dataLabels: {enabled: false},
     stroke: {
       width: 0.8,
       colors: ['#fff']
@@ -233,14 +234,14 @@ function renderThreads(children) {
     },
     legend: {
       position: 'top',
-      horizontalAlign: 'left',
+      horizontalAlign: 'center',
       offsetX: 40
     }
     };
 
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
-    for (idx = 0; idx < Math.min(sorted_keys.length, 7); idx++) {
+    for (idx = 0; idx < Math.min(sorted_keys.length, 8); idx++) {
         insertTickerWrapper(sorted_keys[idx], idx, stats);
         insertTicker(sorted_keys[idx], idx);
     }
