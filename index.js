@@ -266,7 +266,7 @@ function fetchJSON(url, successHandler, token) {
 
 
 /* reddit threads not software threads ¯\_(ツ)_/¯ */
-function getThreads(token, reqs=5) {
+function getThreads(token, reqs=6) {
     var after = ''; 
     var children = [];
     var done = 0;
@@ -280,11 +280,11 @@ function getThreads(token, reqs=5) {
         children = children.concat(data['data']['children']);
         after = data['data']['after'];
         done++;
+        $('#loadingtext').text("Please be patient... " + children.length.toString() + " threads fetched. (" + Math.round(done*100/reqs).toString() + '%)');
         if (done >= reqs || after == null) {
             $('div').remove('.loader');
             renderThreads(children);            
         } else {
-            $('#loadingtext').text("Please be patient... " + (done*100/reqs) + '%');
             let url = base_url;
             console.log("after:", after);
             if (after != '') {
