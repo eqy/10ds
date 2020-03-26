@@ -9,10 +9,6 @@ body {
     text-align: center;
 }
 
-#chart {
-    display: inline-block;
-}
-
 
 @media all and (orientation:portrait) {
   .container {
@@ -38,6 +34,17 @@ body {
 
 #loadingtext {
     font-size: 36px;
+}
+
+#chart {
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+
+.apexcharts-canvas {
+    margin: 0 auto;
 }
 
 .postlink { 
