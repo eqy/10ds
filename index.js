@@ -287,7 +287,7 @@ function renderThreads(children) {
 }
 
 
-function fetchJSON(url, successHandler, token) {
+function fetchJSON(url, successHandler, errorHandler, token) {
     function setHeader(xhr) {
         xhr.setRequestHeader('Authorization', 'bearer ' + token);
     }
@@ -297,8 +297,7 @@ function fetchJSON(url, successHandler, token) {
       type: 'GET',
       dataType: 'json',
       success: successHandler,
-      /* TODO: handle 429 */
-      /* error: ???, guess ill die */
+      error: errorHandler,
       beforeSend: setHeader
     });
 }
@@ -329,10 +328,15 @@ function getThreads(token, reqs=6) {
             if (after != '') {
                 url = url + '&after=' + after;
             }
-            fetchJSON(url, successHandler, token);
+            fetchJSON(url, successHandler, errorHandler, token);
         }
     }
-    fetchJSON(base_url, successHandler, token);
+
+    function errorHandler(xhr, textStatus, errorThrown) {
+        $('#loadingtext').text("oof, you may have saturated our free reddit API access, please try again later...");
+    }
+
+    fetchJSON(base_url, successHandler, errorHandler, token);
 }
 
 
@@ -358,6 +362,11 @@ function computeGuhIndex(put_count, call_count) {
         let final_text = 'guh index: ' + index.toString() + text;
         $('#guhindex').append(final_text);
     }
+
+    function errorHandler(xhr, textStatus, errorThrown) {
+        let final_text = 'oof, you may have saturated our free guh index API endpoint, please try again later...';
+        $('#guhindex').append(final_text);
+    }
     
     let url = 'https://finnhub.io/api/v1/quote?symbol=SPY&token=bpuio3frh5rcil2v65d0';
     $.ajax({
@@ -365,8 +374,7 @@ function computeGuhIndex(put_count, call_count) {
       type: 'GET',
       dataType: 'json',
       success: successHandler,
-      /* TODO: handle 429 */
-      /* error: ???, guess ill die */
+      error: errorHandler,
     });
 }
 
