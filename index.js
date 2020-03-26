@@ -31,7 +31,7 @@ function OAuthInit(callback) {
 
 
 /* smol brain */
-let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'JULY', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE', 'AND', 'OF']);
+let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'JULY', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE', 'AND', 'OF', 'OWN']);
 
 function findMeme(child) {
     /* cutting-edge state-of-the-art sentiment analysis */
