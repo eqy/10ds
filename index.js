@@ -102,7 +102,7 @@ function memeStats(memes, memecontexts) {
 
 
 function generatePostLink(link_text, tooltip_text, link){
-    let text = '<a href=' + link + ' title=\"' + tooltip_text + '\">' + link_text + '</a>';
+    let text = '<a href=' + link + ' title=\"' + tooltip_text.replace(/"/g, '&quot;') + '\">' + link_text + '</a>';
     return text;
 }
 
