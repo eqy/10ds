@@ -43,7 +43,9 @@ function findMeme(child) {
        else use second */
     //let re = /\b[A-Za-z]{1,4} *[0-9\.]{1,9} *(?:p|c|P|C)/;
     //let re = /\b[A-Za-z]{1,4}\b *[\$0-9\.]{1,9} *(?:P(UT\b|UTS\b|\b)|C(ALL\b|ALLS\b|\b))/;
-    let re = /(\b[A-Za-z]{1,4}\b) *\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS\b|\b)|C(?:ALL\b|ALLS\b|\b))/;
+    //let re = /(\b[A-Za-z]{1,4}\b) *\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS\b|\b)|C(?:ALL\b|ALLS\b|\b))/;
+    //let re = /(\b[A-Za-z]{1,4}\b)([ \/0-9])*\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS|\b)|C(?:ALL\b|ALLS\b|\b))/;
+    let re = /(\b[A-Za-z]{1,4}\b) *((?:[0-9]{1,4}\/[0-9]{1,4})|(?:[0-9]{1,4}\/[0-9]{1,4}\/[0-9]{1,4}))? *\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS|\b)|C(?:ALL\b|ALLS\b|\b))/;
     let str = child['data']['selftext'].toUpperCase();
     let memes = [];
     let memecontexts = [];
@@ -53,8 +55,8 @@ function findMeme(child) {
         match = str.match(re);
         if (match != null) {
             let ticker = match[1];
-            let strike = match[2];
-            let type = match[3];
+            let strike = match[3];
+            let type = match[4];
             match_idx = str.indexOf(match[0]);
             str = str.slice(match_idx + match[0].length);
             //match = match.toUpperCase();
@@ -68,6 +70,29 @@ function findMeme(child) {
         }
     } while (match != null);
     return [memes, memecontexts];
+}
+
+
+function findIndicator(child) {
+    let re = /bear|🐻|bull|🐂/;
+    let match = null;
+    let bear_count = 0;
+    let bull_count = 0;
+    let str = child['data']['selftext'].toLowerCase();
+    do {
+        match = str.match(re);
+        if (match != null) {
+            if (match[0] == 'bear' || match[0] == '🐻') {
+                bear_count++; 
+            }
+            else {
+                bull_count++;
+            }
+            match_idx = str.indexOf(match[0]);
+            str = str.slice(match_idx + match[0].length);
+        }
+    } while (match != null);
+    return [bear_count, bull_count];
 }
 
 
@@ -161,13 +186,23 @@ function insertTicker(ticker, idx) {
 function renderThreads(children) {
     let memes = [];
     let memecontexts = [];
+    /*
+    let bear_count = 0;
+    let bull_count = 0;
+    */
     for (idx = 0; idx < children.length; idx++) {
         let found_meme_results = findMeme(children[idx]);
+        /* 
+        let counts = findIndicator(children[idx]);
+        bear_count += counts[0];
+        bull_count += counts[1];
+        */
         /* get back both call/puts and context of meme */
         memes = memes.concat(found_meme_results[0]);
         memecontexts = memecontexts.concat(found_meme_results[1]);
         console.assert(memecontexts.length == memes.length, "memecontext length check failed");
     }
+    // console.log("overall sentiment: bears: ", bear_count, " bulls: ", bull_count);
     let stats = memeStats(memes, memecontexts);
     let tickers = Object.keys(stats);
     let sorted_keys = tickers.sort(function comp(a, b){
@@ -200,8 +235,9 @@ function renderThreads(children) {
       chart: {
       type: 'bar',
       height: 320,
-      width: 1024,
+      width: 1280,
       stacked: true,
+      columnWidth: '100%',
       stackType: '100%'
     },
     colors: ['#fe5350', '#26a69a'],
