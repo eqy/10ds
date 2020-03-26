@@ -27,6 +27,7 @@ body {
 
 
 .tradingwrapper {
+    font-weight: bold;
     margin: auto auto;
 }
 
@@ -36,6 +37,8 @@ body {
 
 .postlink { 
     transition: all .2s; 
+    border: 2px solid gray;
+    text-decoration: none;
 }
 
 .postlink:hover { 
