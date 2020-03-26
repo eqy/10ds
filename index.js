@@ -25,7 +25,7 @@ function OAuthInit(callback) {
     }
 }).done(function(data){
     let token = data['access_token'];
-    getThreads(token);
+    callback(token);
 });
 }
 
