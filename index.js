@@ -1,6 +1,34 @@
 console.log('running some code...');
 console.log('わかりません javascript wwwwww');
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+let device_id = uuidv4().slice(0, 30);
+let client_id = 'IDUG09FEkzUeYQ';
+
+
+function OAuthInit(callback) {
+    $.ajax({
+    type: 'POST',
+    url: 'https://www.reddit.com/api/v1/access_token',
+    data: {
+        device_id: device_id,
+        grant_type: 'https://oauth.reddit.com/grants/installed_client'
+    },
+    beforeSend: function(xhr){
+        xhr.setRequestHeader('Authorization', 'Basic ' + btoa(client_id + ':' + ''));
+    }
+}).done(function(data){
+    let token = data['access_token'];
+    getThreads(token);
+});
+}
+
 
 /* smol brain */
 let invalid_memes = new Set(['ROPE', 'LIFE', 'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUNE', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC', 'OR', 'AT', 'MY', 'THE', 'AND']);
@@ -221,13 +249,29 @@ function renderThreads(children) {
 }
 
 
+function fetchJSON(url, successHandler, token) {
+    function setHeader(xhr) {
+        xhr.setRequestHeader('Authorization', 'bearer ' + token);
+    }
+
+    $.ajax({
+      url: url,
+      type: 'GET',
+      dataType: 'json',
+      success: successHandler,
+      /* error: ???, guess ill die */
+      beforeSend: setHeader
+    });
+}
+
+
 /* reddit threads not software threads ¯\_(ツ)_/¯ */
-function getThreads(reqs=10) {
+function getThreads(token, reqs=10) {
     var after = ''; 
     var children = [];
     var done = 0;
     
-    var base_url = 'https://www.reddit.com/r/wallstreetbets.json?limit=100';
+    var base_url = 'https://oauth.reddit.com/r/wallstreetbets.json?limit=100';
 
     function successHandler(data) {
         /* is concat thread safe? jesus jk everything is supposedly in a
@@ -247,11 +291,11 @@ function getThreads(reqs=10) {
             if (after != '') {
                 url = url + '&after=' + after;
             }
-            $.getJSON(url, successHandler); 
+            fetchJSON(url, successHandler, token);
         }
     }
-    $.getJSON(base_url, successHandler);
+    fetchJSON(base_url, successHandler, token);
 }
 
 
-getThreads();
+OAuthInit(getThreads);

@@ -46,7 +46,7 @@ body {
 
 div.loader {
     animation-name:            rotate; 
-    animation-duration:        10.0s; 
+    animation-duration:        120.0s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
     margin: 0 auto;
