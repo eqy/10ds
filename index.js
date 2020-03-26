@@ -105,7 +105,7 @@ function memeStats(memes, memecontexts) {
         if (invalid_memes.has(ticker)) {
             continue;
         }
-        let bear = meme[2] == 'P';
+        let bear = meme[2][0] == 'P';
         if (!(ticker in map)) {
             map[ticker] = {'puts': 0, 'calls': 0, 'total': 0,
                            'put_texts': [], 'put_links': [], 
