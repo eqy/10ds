@@ -2,6 +2,7 @@ body {
     font-family: sans-serif;
     margin: 0 auto;
     text-align: center;
+    cursor: url(fed.png), auto;
 }
 
 .top {
@@ -79,3 +80,5 @@ div.loader {
     animation-timing-function: linear;
     margin: 0 auto;
 }
+
+
