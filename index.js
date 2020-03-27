@@ -207,7 +207,7 @@ function renderThreads(children) {
     let stats = memeStats(memes, memecontexts);
     let tickers = Object.keys(stats);
     let sorted_keys = tickers.sort(function comp(a, b){
-        return stats[a]['total'] < stats[b]['total'];
+        return stats[b]['total'] - stats[a]['total'];
     });
 
     let put_data = [];
