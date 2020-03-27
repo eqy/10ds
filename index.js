@@ -1,6 +1,9 @@
 console.log('running some code...');
 console.log('わかりません javascript wwwwww');
 
+let red = '#fe5350';
+let green = '#26a69a';
+
 function uuidv4() {
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
@@ -242,7 +245,7 @@ function renderThreads(children) {
       columnWidth: '100%',
       stackType: '100%'
     },
-    colors: ['#fe5350', '#26a69a'],
+    colors: [red, green],
     plotOptions: {
       bar: {
         horizontal: false,
@@ -349,7 +352,7 @@ function computeGuhIndex(put_count, call_count) {
         } else {
             index = sign*(call_count/(put_count + 1E-6))*market_change*100
         }
-        let text = ' ';
+        let text = '';
         if (index < 0) {
             text += '(inverse G';
         } else {
@@ -359,8 +362,14 @@ function computeGuhIndex(put_count, call_count) {
             text += 'U'; 
         }
         text += 'H)';
-        let final_text = 'guh index: ' + index.toString() + text;
-        $('#guhindex').append(final_text);
+        if (index < 0) {
+            $('#guhindexvalue').css('color', green);
+        } else if (index > 0) {
+            $('#guhindexvalue').css('color', red);
+        }
+        $('#guhlabel').text("guh index: ");
+        $('#guhindexvalue').append(index.toString());
+        $('#guhhint').append(text);
     }
 
     function errorHandler(xhr, textStatus, errorThrown) {
