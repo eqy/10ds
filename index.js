@@ -344,8 +344,13 @@ function getThreads(token, reqs=6) {
 
 
 function computeGuhIndex(put_count, call_count) {
-    function successHandler(data) {
-        let market_change = (data['c']/data['pc']) - 1.0
+    function errorHandler(xhr, textStatus, errorThrown) {
+        let final_text = 'oof, you may have saturated our free guh index API endpoint, please try again later...';
+        $('#guhindex').append(final_text);
+    }
+
+    function computeIndex(c, pc) {
+        let market_change = (c/pc) - 1.0
         let sign = Math.sign(put_count - call_count)
         if (put_count > call_count) {
             index = sign*(put_count/(call_count + 1E-6))*market_change*100
@@ -372,11 +377,32 @@ function computeGuhIndex(put_count, call_count) {
         $('#guhhint').append(text);
     }
 
-    function errorHandler(xhr, textStatus, errorThrown) {
-        let final_text = 'oof, you may have saturated our free guh index API endpoint, please try again later...';
-        $('#guhindex').append(final_text);
+    function candleHandler(data) {
+        let len = data['c'].length;
+        let c = data['c'][len - 1];
+        let pc = data['c'][len - 2];
+        computeIndex(c, pc);
     }
-    
+
+    function successHandler(data) {
+        /* cannot get daily data, fallback to candle data */
+        let c = data['c'];
+        let pc = data['pc'];
+        if (c == 0 && pc == 0) {
+            let candle_url = 'https://finnhub.io/api/v1/stock/candle?symbol=SPY&resolution=D&count=7&token=bpuio3frh5rcil2v65d0';
+            $.ajax({
+              url: candle_url,
+              type: 'GET',
+              dataType: 'json',
+              success: candleHandler,
+              error: errorHandler,
+            });
+        } else {
+            computeIndex(c, pc);
+        }
+    }
+
+
     let url = 'https://finnhub.io/api/v1/quote?symbol=SPY&token=bpuio3frh5rcil2v65d0';
     $.ajax({
       url: url,
