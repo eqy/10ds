@@ -50,7 +50,7 @@ function findMeme(child) {
     //let re = /(\b[A-Za-z]{1,4}\b)([ \/0-9])*\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS|\b)|C(?:ALL\b|ALLS\b|\b))/;
     let re = /(\b[A-Za-z]{1,4}\b) *((?:[0-9]{1,4}\/[0-9]{1,4})|(?:[0-9]{1,4}\/[0-9]{1,4}\/[0-9]{1,4}))? *\$?([0-9]{1,9}\.?[0-9]{0,9}) *(P(?:UT\b|UTS|\b)|C(?:ALL\b|ALLS\b|\b))/;
     /* HANDCRAFTED HEURISTICS */
-    let str = child['data']['selftext'].toUpperCase().repalce('TESLA', 'TSLA');;
+    let str = child['data']['selftext'].toUpperCase().replace(/TESLA/g, 'TSLA');
     let memes = [];
     let memecontexts = [];
     let found = new Set();
