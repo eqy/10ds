@@ -363,7 +363,7 @@ function computeGuhIndex(put_count, call_count) {
         } else {
             text += '(G';
         }
-        for (i=0; i < Math.ceil(index/2.0); i++) {
+        for (i=0; i < Math.ceil(Math.abs(index/2.0)); i++) {
             text += 'U'; 
         }
         text += 'H)';
