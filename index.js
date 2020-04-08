@@ -13,7 +13,7 @@ function uuidv4() {
 
 let device_id = uuidv4().slice(0, 30);
 let client_id = 'IDUG09FEkzUeYQ';
-let subreddit = 'r/wallstreetbets';
+let subreddit = 'r/wallstreetbets2';
 
 
 function OAuthInit(callback) {
