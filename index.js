@@ -13,7 +13,7 @@ function uuidv4() {
 
 let device_id = uuidv4().slice(0, 30);
 let client_id = 'IDUG09FEkzUeYQ';
-let subreddit = 'wallstreetbets2';
+let subreddit = 'r/wallstreetbets2';
 
 
 function OAuthInit(callback) {
@@ -259,7 +259,7 @@ function renderThreads(children) {
       colors: ['#fff']
     },
     title: {
-      text: 'WallStreetBets Positions'
+      text: `${subreddit} positions`
     },
     xaxis: {
       categories: sorted_keys_render,
@@ -314,7 +314,7 @@ function getThreads(token, reqs=6) {
     var children = [];
     var done = 0;
     
-    var base_url = `https://oauth.reddit.com/r/${subreddit}.json?limit=100`;
+    var base_url = `https://oauth.reddit.com/${subreddit}.json?limit=100`;
 
     function successHandler(data) {
         /* is concat thread safe? jesus jk everything is supposedly in a
