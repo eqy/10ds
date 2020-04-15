@@ -242,7 +242,7 @@ function renderThreads(children) {
       chart: {
       type: 'bar',
       height: 320,
-      width: 1280,
+      width: 1440,
       stacked: true,
       columnWidth: '100%',
       stackType: '100%'
